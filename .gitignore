@@ -1,0 +1,13 @@
+# folders:
+**/__pycache__
+**/data
+**/sources
+**/figures
+**/old
+
+# files:
+.ipynb_checkpoints/
+.vscode/
+**/*.hdf5
+**/*.csv
+**/*.png

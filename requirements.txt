@@ -1,0 +1,9 @@
+# for reading excel files:
+openpyxl==3.0.7
+# for reading roi from ImageJ:
+read-roi==1.6.0
+# for geospatial processing:
+#Shapely==1.7.1
+Shapely==1.8a3 # version of Shapely which have validation.make_valid function:
+# image processing:
+scikit-image==0.21.0
