@@ -6,6 +6,8 @@
 **/old
 
 # files:
+Buildrun.bash
+
 .ipynb_checkpoints/
 .vscode/
 **/*.hdf5
