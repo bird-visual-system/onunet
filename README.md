@@ -1,5 +1,5 @@
 
-# onunet
+# Onunet
 
 A U-Net based deep learning pipeline for semantic segmentation of optical nerve images. The purpose is to detect and mark axons constituting the optical nerve. The model is trained on grayscale microscopy images and produces pixel-level binary segmentation masks, using pixel-weighted binary cross-entropy to handle boundary detection for seprarating adjacent axons.
 
@@ -24,9 +24,9 @@ A U-Net based deep learning pipeline for semantic segmentation of optical nerve 
 
 ## Overview
 
-**onunet** segments optical nerve structures from grayscale images using a fully-convolutional encoder-decoder network (U-Net). Key features:
+**Onunet** segments optical nerve structures from grayscale images using a fully-convolutional encoder-decoder network (U-Net). Key features:
 
-- Pixel-weighted loss that down- or up-weights individual pixels during training, enabling better boundary detection between adjacent axons and, optionaly, handling  class imbalance between foreground and background.
+- Pixel-weighted loss that down- or up-weights individual pixels during training, enabling better boundary detection between adjacent axons and, optionally, handling  class imbalance between foreground and background.
 - Data augmentation (rotation, shifts, shear, zoom, horizontal/vertical flips) applied consistently to images, masks, and weight maps.
 - Configurable hyperparameters via environment variables for easy use in containerized environments.
 
@@ -59,14 +59,10 @@ onunet/
 ├── model.py              # Model definitions and custom losses
 ├── data.py               # Data generators with augmentation
 ├── Dockerfile            # Container definition (TensorFlow 2.13 GPU)
-├── Buildrun.bash         # Helper script to run the Docker container
 ├── requirements.txt      # Additional Python dependencies
 ├── trainUnet.ipynb       # Interactive training notebook
 ├── testOnunet.ipynb      # Evaluation and testing notebook
 ├── predictOnunet.ipynb   # Inference / prediction notebook
-├── data/                 # Training and validation data (see below)
-├── figures/              # Training history plots
-└── old/                  # Archived experiments
 ```
 
 ---
@@ -82,11 +78,7 @@ Shapely==1.8a3
 scikit-image==0.21.0
 ```
 
-The Docker image (`tensorflow/tensorflow:2.13.0-gpu`) already includes TensorFlow, NumPy, and Keras. Install additional dependencies with:
-
-```bash
-pip install -r requirements.txt
-```
+The Docker image (`tensorflow/tensorflow:2.13.0-gpu`) already includes TensorFlow, NumPy, and Keras. Additional dependencies are installed in the Dockerfile.
 
 ---
 
@@ -117,7 +109,7 @@ Images and masks are normalised to [0, 1]. Masks are binarised at a threshold of
 Pull or build the image:
 
 ```bash
-docker build -t registry.gitlab.com/ptitmatheux/onunet .
+docker build -t onunet .
 ```
 
 Run training (mounts your home directory and sets hyperparameters):
@@ -125,14 +117,12 @@ Run training (mounts your home directory and sets hyperparameters):
 ```bash
 docker run -it \
   -e BATCH_SIZE=4 \
-  -e EPOCHS=50 \
+  -e EPOCHS=100 \
   -e STEPS_PER_EPOCH=100 \
-  -e VALIDATION_STEPS=20 \
+  -e VALIDATION_STEPS=6 \
   -v /home/$USER:/home/jovyan \
-  registry.gitlab.com/ptitmatheux/onunet
+  onunet
 ```
-
-See `Buildrun.bash` for machine-specific run commands.
 
 ### Training locally
 
@@ -140,9 +130,9 @@ Set the required environment variables, then run:
 
 ```bash
 export BATCH_SIZE=4
-export EPOCHS=50
+export EPOCHS=100
 export STEPS_PER_EPOCH=100
-export VALIDATION_STEPS=20
+export VALIDATION_STEPS=6
 python main.py
 ```
 
@@ -168,14 +158,6 @@ Hyperparameters are passed as environment variables and logged to `optical_nerve
 | `EPOCHS` | Total number of training epochs |
 | `STEPS_PER_EPOCH` | Number of batches per epoch |
 | `VALIDATION_STEPS` | Number of batches used for validation |
-
----
-
-## Training history
-
-Example training curves (50 epochs, 9 training examples):
-
-![Training history](figures/optical_nerve_history_from_scratch_9examples.png)
 
 ---
 
